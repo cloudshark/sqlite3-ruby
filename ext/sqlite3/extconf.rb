@@ -4,7 +4,11 @@ require 'mkmf'
 
 # :stopdoc:
 
-RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
+if RUBY_PLATFORM =~ /darwin/
+  RbConfig::MAKEFILE_CONFIG['CC'] = "gcc-4.2"
+else
+  RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
+end
 
 # --with-sqlite3-{dir,include,lib}
 dir_config("sqlite3-cipher", "/usr/cloudshark/include", "/usr/cloudshark/lib")
