@@ -4,14 +4,11 @@ require 'mkmf'
 
 # :stopdoc:
 
-if RUBY_PLATFORM =~ /darwin/
-  RbConfig::MAKEFILE_CONFIG['CC'] = "gcc-4.2"
-else
-  RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
-end
+RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 
 # --with-sqlite3-{dir,include,lib}
-dir_config("sqlite3-cipher", "/usr/cloudshark/include", "/usr/cloudshark/lib")
+dir_config("sqlite3")
+dir_config("sqlcipher")
 
 # prioritize local builds
 if enable_config("local", false)
@@ -36,8 +33,8 @@ location where your sqlite3 shared library is located).
   end
 end
 
-asplode('sqlite3-cipher.h')  unless find_header  'sqlite3-cipher.h'
-asplode('sqlite3-cipher') unless find_library 'sqlite3-cipher', 'sqlite3_key'
+asplode('sqlite3.h')  unless find_header  'sqlite3.h'
+asplode('sqlcipher') unless find_library 'sqlcipher', 'sqlite3_key'
 
 # Functions defined in 1.9 but not 1.8
 have_func('rb_proc_arity')
@@ -53,7 +50,7 @@ have_func('sqlite3_enable_load_extension')
 have_func('sqlite3_load_extension')
 have_func('sqlite3_open_v2')
 have_func('sqlite3_prepare_v2')
-have_type('sqlite3_int64', 'sqlite3-cipher.h')
-have_type('sqlite3_uint64', 'sqlite3-cipher.h')
+have_type('sqlite3_int64', 'sqlite3.h')
+have_type('sqlite3_uint64', 'sqlite3.h')
 
 create_makefile('sqlite3/sqlite3_native')
