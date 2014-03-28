@@ -24,6 +24,19 @@ module SQLite3
       end
     end
 
+    def test_insert_duplicate_records
+      @db.execute 'CREATE TABLE "things" ("name" varchar(20) CONSTRAINT "index_things_on_name" UNIQUE)'
+      stmt = @db.prepare("INSERT INTO things(name) VALUES(?)")
+      stmt.execute('ruby')
+
+      exception = assert_raises(SQLite3::ConstraintException) { stmt.execute('ruby') }
+      # SQLite 3.8.2 returns new error message:
+      #   UNIQUE constraint failed: *table_name*.*column_name*
+      # Older versions of SQLite return:
+      #   column *column_name* is not unique
+      assert_match /(column(s)? .* (is|are) not unique|UNIQUE constraint failed: .*)/, exception.message
+    end
+
     ###
     # This method may not exist depending on how sqlite3 was compiled
     def test_database_name
@@ -227,9 +240,7 @@ module SQLite3
       stmt.execute('employee-1')
       stmt.execute('employee-1') rescue SQLite3::ConstraintException
       stmt.reset!
-      assert_nothing_raised(SQLite3::ConstraintException) {
-        stmt.execute('employee-2')
-      }
+      assert stmt.execute('employee-2')
     end
 
     def test_clear_bindings

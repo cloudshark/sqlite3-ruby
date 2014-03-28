@@ -28,8 +28,9 @@ def asplode missing
           "http://www.sqlite.org/ first."
   else
     abort <<-error
-#{missing} is missing. Try 'port install sqlite3 +universal'
-or 'yum install sqlite-devel' and check your shared library search path (the
+#{missing} is missing. Try 'port install sqlite3 +universal',
+'yum install sqlite-devel' or 'apt-get install libsqlite3-dev'
+and check your shared library search path (the
 location where your sqlite3 shared library is located).
     error
   end
@@ -40,6 +41,9 @@ asplode('sqlite3-cipher') unless find_library 'sqlite3-cipher', 'sqlite3_key'
 
 # Functions defined in 1.9 but not 1.8
 have_func('rb_proc_arity')
+
+# Functions defined in 2.1 but not 2.0
+have_func('rb_integer_pack')
 
 # These functions may not be defined
 have_func('sqlite3_initialize')
