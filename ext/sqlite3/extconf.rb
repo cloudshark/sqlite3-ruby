@@ -7,8 +7,8 @@ require 'mkmf'
 RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 
 # --with-sqlite3-{dir,include,lib}
-dir_config("sqlite3")
-dir_config("sqlcipher")
+dir_config("sqlite3", "/usr/cloudshark/include/sqlcipher", '/usr/cloudshark/lib')
+dir_config("sqlcipher", "/usr/cloudshark/include", "/usr/cloudshark/lib")
 
 # prioritize local builds
 if enable_config("local", false)
